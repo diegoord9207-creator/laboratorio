@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratorio Virtual de Mezclas EcoLadrillos</title>
+<style>
+:root{
+ --bg:#f2f6ee;--fg:#1f2a24;--card:#ffffff;--bd:#d3dfc9;--soft:#e8f0e0;
+ --ac:#c2552b;--acfg:#ffffff;--green:#1f6b49;--ok:#1b7a3d;--warn:#a34a00;
+ --h1:#1f6b49;--h2:#c2552b;--shadow:0 2px 10px rgba(31,107,73,.12);
+ --hero1:#1f6b49;--hero2:#2f8f63;--hero3:#d9822b;
+ --s0:#2f8f63;--s1:#d9822b;--s2:#c2552b;--s3:#6b5bb5}
+@media (prefers-color-scheme:dark){:root{
+ --bg:#111c16;--fg:#eaf2e6;--card:#1b2b22;--bd:#34503f;--soft:#233a2d;
+ --ac:#f0a36b;--acfg:#18110b;--green:#7fd1a2;--ok:#86e0a0;--warn:#ffc27d;
+ --h1:#7fd1a2;--h2:#f0a36b;--shadow:0 2px 12px rgba(0,0,0,.4);
+ --hero1:#14452f;--hero2:#1f6b49;--hero3:#8a4a1c;
+ --s0:#6fcf9c;--s1:#f0b46a;--s2:#f0a36b;--s3:#b4a8f0}}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.55}
+main{max-width:800px;margin:auto;padding:0 14px 28px}
+.hero{background:linear-gradient(120deg,var(--hero1),var(--hero2) 60%,var(--hero3));color:#fff;border-radius:0 0 22px 22px;padding:22px 18px 18px;margin:0 -14px 12px;box-shadow:var(--shadow)}
+.hero h1{color:#fff;font-size:1.55rem;margin:0 0 6px;line-height:1.2}
+.hero p{margin:6px 0 0;font-size:.95rem;opacity:.97}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:2px 12px;font-size:.8rem;margin-bottom:8px}
+h2{font-size:1.2rem;color:var(--h2);margin:.1em 0 .5em}
+h3{font-size:1rem;margin:.9em 0 .2em;color:var(--h1)}
+.card{background:var(--card);border:1px solid var(--bd);border-top:5px solid var(--green);border-radius:14px;padding:16px;margin:14px 0;box-shadow:var(--shadow)}
+#s0{border-top-color:var(--s0)}#s1{border-top-color:var(--s1)}#s2{border-top-color:var(--s2)}#s3{border-top-color:var(--s3)}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+nav button{flex:1 1 150px;background:var(--card);color:var(--fg);border:2px solid var(--bd);border-radius:12px;text-align:left;font-size:.88rem;padding:10px 12px;box-shadow:var(--shadow)}
+nav button:nth-child(1){border-bottom:5px solid var(--s0)}nav button:nth-child(2){border-bottom:5px solid var(--s1)}
+nav button:nth-child(3){border-bottom:5px solid var(--s2)}nav button:nth-child(4){border-bottom:5px solid var(--s3)}
+nav button[aria-current=step]{background:var(--soft);border-color:var(--green);font-weight:700}
+nav button .chk{float:right;color:var(--ok);font-weight:700}
+button{background:var(--ac);color:var(--acfg);border:2px solid transparent;border-radius:10px;padding:9px 16px;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .12s,filter .12s}
+button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+button.sec{background:var(--soft);color:var(--fg);border-color:var(--bd);font-weight:500}
+button.sec:hover{border-color:var(--green)}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+label{display:block;font-weight:600;margin-top:10px}
+input[type=range]{width:100%;accent-color:var(--ac)}
+input[type=radio]{accent-color:var(--green)}
+select,textarea{width:100%;padding:9px;font:inherit;background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:10px}
+fieldset{border:1px solid var(--bd);background:var(--soft);border-radius:12px;margin:10px 0;padding:10px 14px}
+legend{font-weight:600;padding:0 6px}
+fieldset label{font-weight:400;margin:6px 0}
+.ok{color:var(--ok);font-weight:600}.warn{color:var(--warn);font-weight:600}
+small,.note{opacity:.92;font-size:.9rem}
+.stack{display:flex;height:36px;border-radius:10px;overflow:hidden;border:1px solid var(--bd);margin:6px 0}
+.stack span{display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:600;color:#1b1b1b;overflow:hidden;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.grid>div{background:var(--soft);border:1px solid var(--bd);border-radius:12px;padding:10px}
+.bar{height:14px;background:var(--soft);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--hero3));width:0;transition:width .3s}
+.jarwrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.jar{position:relative;width:110px;height:200px;border:3px solid var(--green);border-top:none;border-radius:0 0 22px 22px;background:linear-gradient(180deg,rgba(120,190,235,.18),rgba(120,190,235,.38));overflow:hidden;flex:none;box-shadow:inset 6px 0 10px rgba(255,255,255,.25)}
+.susp{position:absolute;inset:0;background:#9a7b55;opacity:.9;transition:opacity 7s ease-in-out}
+.lay{position:absolute;left:0;right:0;height:0;transition:height 2.5s ease-out}
+.jar.settled .susp{opacity:0}
+.jar.settled .lay{height:var(--h)}
+#lA{bottom:0;transition-delay:.3s;background:#e3cf9d}
+#lL{bottom:var(--bL);transition-delay:2.5s;background:#b79a6a}
+#lC{bottom:var(--bC);transition-delay:5s;background:#c4673c}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}
+.fb{margin:6px 0;min-height:1.4em}
+ul{padding-left:1.2em;margin:.3em 0}
+#done{background:linear-gradient(120deg,var(--soft),var(--card));border-color:var(--ok);border-top-color:var(--ok)}
+footer small{display:block;margin-top:10px;padding:10px 12px;border:1px dashed var(--bd);border-radius:10px}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<span class="badge">Proyecto EcoLadrillos · Recurso educativo</span>
+<h1>Laboratorio Virtual de Mezclas EcoLadrillos</h1>
+<p>Los EcoLadrillos de este proyecto no son de botellas plásticas: se hacen con <strong>tierra y otros materiales de la zona</strong>. Recorre cuatro etapas, como en el proyecto real: conocer la tierra, elegir materiales, diseñar tu variante y reflexionar. <strong>No hay nota:</strong> lo importante es que observes, compares y justifiques tus decisiones.</p>
+</header>
+
+<nav id="tabs" aria-label="Etapas del laboratorio"></nav>
+
+<!-- ETAPA 1 -->
+<section id="s0" class="card" aria-labelledby="h0">
+<h2 id="h0">Etapa 1. Conoce tu tierra</h2>
+<p>Antes de mezclar, se observa de qué está hecha la tierra. Una forma sencilla es la <strong>prueba de sedimentación</strong>: se agita tierra con agua en un frasco y se deja quieta. Las partículas se separan por capas. Prueba con distintas proporciones.</p>
+<div class="jarwrap">
+  <div class="jar" id="jar" role="img" aria-label="Frasco con tierra y agua"><div class="susp"></div><div class="lay" id="lA"></div><div class="lay" id="lL"></div><div class="lay" id="lC"></div></div>
+  <div style="flex:1;min-width:220px">
+    <label for="sA">Arena en la muestra: <output id="oA">40</output> %</label>
+    <input id="sA" type="range" min="0" max="100" step="5" value="40">
+    <label for="sC">Arcilla en la muestra: <output id="oC">20</output> %</label>
+    <input id="sC" type="range" min="0" max="100" step="5" value="20">
+    <p class="note">Limo (lo que queda): <strong id="oL">40</strong> %</p>
+    <button id="settle" type="button">Agitar y dejar reposar</button>
+  </div>
+</div>
+<p class="note" id="jarNote" aria-live="polite"></p>
+
+<h3>Pregunta 1</h3>
+<fieldset><legend>Al dejar reposar la mezcla de tierra y agua, ¿qué se deposita primero en el fondo?</legend>
+<label><input type="radio" name="q1" value="a"> Arena, porque sus partículas son más grandes y pesadas</label>
+<label><input type="radio" name="q1" value="b"> Arcilla, porque es la más fina</label>
+<label><input type="radio" name="q1" value="c"> Todo se deposita al mismo tiempo</label>
+<button type="button" class="sec" data-q="1">Comprobar</button><div class="fb" id="fb1" aria-live="polite"></div></fieldset>
+
+<h3>Pregunta 2</h3>
+<p>Después de la sedimentación, la tierra se <strong>tamiza</strong> (se pasa por una malla).</p>
+<fieldset><legend>¿Para qué sirve tamizar la tierra antes de mezclar?</legend>
+<label><input type="radio" name="q2" value="a"> Para quitar piedras y terrones grandes y tener una tierra más uniforme</label>
+<label><input type="radio" name="q2" value="b"> Para que la tierra se vuelva arcilla</label>
+<label><input type="radio" name="q2" value="c"> Para que la mezcla no necesite agua</label>
+<button type="button" class="sec" data-q="2">Comprobar</button><div class="fb" id="fb2" aria-live="polite"></div></fieldset>
+<p class="note">Cuando respondas bien las dos preguntas, esta etapa queda completa.</p>
+</section>
+
+<!-- ETAPA 2 -->
+<section id="s1" class="card" hidden aria-labelledby="h1">
+<h2 id="h1">Etapa 2. Materiales y variantes del proyecto</h2>
+<p>En la experiencia que dio origen a este proyecto (Institución Educativa La Palma, Gámbita, Santander) se elaboraron cuatro variantes de EcoLadrillo. Estas son sus proporciones:</p>
+<div class="grid" id="lp"></div>
+<p class="note">Estas variantes son el punto de partida pedagógico. No se hicieron ensayos de laboratorio, por eso aquí no se afirma cuál es “mejor”.</p>
+<h3>¿De dónde viene cada material en tu contexto?</h3>
+<p>Elige el origen de cada material <strong>en tu región</strong>. No hay una única respuesta correcta: depende de dónde vivas.</p>
+<div id="origins"></div>
+<p class="note" id="orgNote" aria-live="polite"></p>
+</section>
+
+<!-- ETAPA 3 -->
+<section id="s2" class="card" hidden aria-labelledby="h2">
+<h2 id="h2">Etapa 3. Diseña tu variante</h2>
+<p>Arma tu propia mezcla. Los porcentajes deben sumar <strong>100 %</strong>. Puedes empezar desde una variante del proyecto o desde cero.</p>
+<p><button type="button" class="sec" data-load="0">Variante 1</button> <button type="button" class="sec" data-load="1">Variante 2</button> <button type="button" class="sec" data-load="2">Variante 3</button> <button type="button" class="sec" data-load="3">Variante 4</button> <button type="button" class="sec" data-load="-1">Desde cero</button></p>
+<div id="sliders"></div>
+<div class="stack" id="myStack" role="img" aria-label="Composición de tu mezcla"></div>
+<p><strong id="tot">Total: 100 %</strong> <span id="totMsg" class="warn"></span></p>
+<h3>Mirada ambiental de tu mezcla</h3>
+<p class="note">Se calcula con el origen que elegiste en la Etapa 2.</p>
+<div id="orgBars"></div>
+<h3>Preguntas para pensar y hipótesis para comprobar en la práctica</h3>
+<ul id="hints"></ul>
+<p class="note">Son ideas para observar al fabricar la mezcla, no resultados medidos.</p>
+<button type="button" id="saveMix">Guardar mi variante</button> <span id="saveMsg" aria-live="polite"></span>
+</section>
+
+<!-- ETAPA 4 -->
+<section id="s3" class="card" hidden aria-labelledby="h3t">
+<h2 id="h3t">Etapa 4. Reflexiona y justifica</h2>
+<p id="mixSummary"></p>
+<label for="r0">1. ¿Por qué elegiste estas proporciones? ¿Qué función crees que cumple cada material?</label>
+<textarea id="r0" rows="3" maxlength="500"></textarea>
+<label for="r1">2. ¿Qué material o residuo de tu entorno podrías aprovechar para este proyecto y por qué?</label>
+<textarea id="r1" rows="3" maxlength="500"></textarea>
+<label for="r2">3. ¿Qué probarías o comprobarías en la práctica antes de usar tu mezcla?</label>
+<textarea id="r2" rows="3" maxlength="500"></textarea>
+<p class="note">Escribe al menos 20 caracteres en cada respuesta (máximo 500).</p>
+<button type="button" id="saveRef">Guardar mi reflexión</button> <span id="refMsg" aria-live="polite"></span>
+</section>
+
+<div class="card" id="done" hidden role="status"><strong class="ok">¡Laboratorio completado!</strong> Completaste las cuatro etapas. Tu docente podrá ver tu avance en la plataforma.</div>
+
+<footer><small>Recurso educativo del proyecto EcoLadrillos Educativos. Los EcoLadrillos de este proyecto no han sido validados científicamente como material de construcción; este laboratorio es solo una herramienta de aprendizaje. Licencia CC BY-NC-SA 4.0 · Autor: Diego Iván Ordóñez Vargas.</small></footer>
+</main>
+<script>
+/* ---------- SCORM 1.2 (RTE) ---------- */
+var lms=null,finished=false;
+function findAPI(w){var n=0;while(w&&!w.API&&w.parent&&w.parent!==w&&n<10){w=w.parent;n++}return w&&w.API?w.API:null}
+function scormInit(){
+  try{lms=findAPI(window)||(window.opener?findAPI(window.opener):null)}catch(e){lms=null}
+  if(!lms)return false;
+  lms.LMSInitialize("");
+  var st=lms.LMSGetValue("cmi.core.lesson_status");
+  if(st==="not attempted"||st===""){lms.LMSSetValue("cmi.core.lesson_status","incomplete")}
+  return true;
+}
+function scormEnd(){if(lms&&!finished){finished=true;lms.LMSCommit("");lms.LMSFinish("")}}
+
+/* ---------- Datos ---------- */
+var M=[
+ {k:"tierra",n:"Tierra",c:"#8d6e4a"},
+ {k:"arena",n:"Arena",c:"#e3cf9d"},
+ {k:"arcilla",n:"Arcilla",c:"#c47a4a"},
+ {k:"cascarilla",n:"Cascarilla de arroz",c:"#d8c65a"},
+ {k:"ceniza",n:"Ceniza",c:"#b5b5b5"},
+ {k:"estiercol",n:"Estiércol de caballo",c:"#7d5f48"},
+ {k:"cemento",n:"Cemento",c:"#9fb4c7"}
+];
+var V=[
+ {tierra:40,arcilla:30,cascarilla:10,ceniza:20},
+ {tierra:50,arena:30,ceniza:20},
+ {tierra:50,arena:30,estiercol:20},
+ {tierra:50,arena:40,cemento:10}
+];
+var ORIG=["Sin clasificar","Del terreno o del entorno","Residuo de otra actividad","Se compra"];
+var NAMES=["1. Conoce tu tierra","2. Materiales y variantes","3. Diseña tu variante","4. Reflexiona"];
+var S={s:[0,0,0,0],q:[0,0],o:{},m:{tierra:100},r:["","",""],cur:0};
+var $=function(i){return document.getElementById(i)};
+function val(m,k){return +m[k]||0}
+function total(m){return M.reduce(function(t,x){return t+val(m,x.k)},0)}
+
+/* ---------- Persistencia (suspend_data) ---------- */
+function pack(){return JSON.stringify({s:S.s,q:S.q,o:S.o,m:S.m,r:S.r,c:S.cur})}
+function persist(){
+  if(!lms)return;
+  var d=pack();
+  if(d.length>4000){d=JSON.stringify({s:S.s,q:S.q,o:S.o,m:S.m,c:S.cur})}
+  lms.LMSSetValue("cmi.suspend_data",d);
+  lms.LMSSetValue("cmi.core.lesson_location",String(S.cur));
+  if(S.s.every(Boolean)){lms.LMSSetValue("cmi.core.lesson_status","completed")}
+  lms.LMSCommit("");
+}
+function restore(){
+  if(!lms)return;
+  var d=lms.LMSGetValue("cmi.suspend_data");
+  if(!d)return;
+  try{var o=JSON.parse(d);
+    if(o.s)S.s=o.s;if(o.q)S.q=o.q;if(o.o)S.o=o.o;if(o.m)S.m=o.m;if(o.r)S.r=o.r;if(typeof o.c==="number")S.cur=o.c;
+  }catch(e){}
+}
+
+/* ---------- Navegación ---------- */
+function drawTabs(){
+  var h="";
+  NAMES.forEach(function(n,i){h+='<button type="button" data-t="'+i+'"'+(i===S.cur?' aria-current="step"':'')+'>'+n+'<span class="chk" aria-label="'+(S.s[i]?'completada':'pendiente')+'">'+(S.s[i]?'✔':'○')+'</span></button>'});
+  $("tabs").innerHTML=h;
+  for(var i=0;i<4;i++){$("s"+i).hidden=(i!==S.cur)}
+  $("done").hidden=!S.s.every(Boolean);
+}
+$("tabs").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  S.cur=+b.getAttribute("data-t");drawTabs();
+  if(S.cur===3)drawSummary();if(S.cur===2)drawMix();persist();
+});
+
+/* ---------- Etapa 1 ---------- */
+function jar(){
+  var a=+$("sA").value,c=+$("sC").value;
+  if(a+c>100){if(document.activeElement===$("sA")){c=100-a;$("sC").value=c}else{a=100-c;$("sA").value=a}}
+  var l=100-a-c;
+  $("oA").textContent=a;$("oC").textContent=c;$("oL").textContent=l;
+  var j=$("jar"),k=0.6;
+  j.style.setProperty("--h",""); 
+  $("lA").style.setProperty("--h",(a*k)+"%");
+  $("lL").style.setProperty("--h",(l*k)+"%");$("lL").style.setProperty("--bL",(a*k)+"%");
+  $("lC").style.setProperty("--h",(c*k)+"%");$("lC").style.setProperty("--bC",((a+l)*k)+"%");
+  j.classList.remove("settled");
+  $("jarNote").textContent="";
+}
+["sA","sC"].forEach(function(i){$(i).addEventListener("input",jar)});
+$("settle").addEventListener("click",function(){
+  var j=$("jar");j.classList.remove("settled");void j.offsetWidth;j.classList.add("settled");
+  $("jarNote").textContent="Observa: la arena queda abajo, luego el limo y al final la arcilla, que tarda más en asentarse. Las capas muestran cuánto hay de cada una en la muestra.";
+});
+var ANS=[{a:"a",ok:"Correcto: las partículas gruesas y pesadas, como la arena, caen primero.",no:"Casi. Observa en el frasco qué capa se forma primero y piensa en el tamaño de las partículas."},
+         {a:"a",ok:"Correcto: tamizar separa lo grueso y deja un material más uniforme para mezclar.",no:"Piensa en lo que atrapa la malla: ¿qué queda arriba, lo grande o lo fino?"}];
+document.querySelectorAll("[data-q]").forEach(function(b){b.addEventListener("click",function(){
+  var n=+b.getAttribute("data-q"),r=document.querySelector('input[name="q'+n+'"]:checked'),f=$("fb"+n);
+  if(!r){f.textContent="Elige una opción.";f.className="fb warn";return}
+  if(r.value===ANS[n-1].a){f.textContent=ANS[n-1].ok;f.className="fb ok";S.q[n-1]=1}
+  else{f.textContent=ANS[n-1].no;f.className="fb warn"}
+  S.s[0]=(S.q[0]&&S.q[1])?1:0;drawTabs();persist();
+})});
+
+/* ---------- Etapa 2 ---------- */
+function stack(m,el){
+  var h="",t=total(m)||1;
+  M.forEach(function(x){var v=val(m,x.k);if(v>0){h+='<span style="width:'+(v*100/t)+'%;background:'+x.c+'" title="'+x.n+' '+v+' %">'+(v>=15?v+'%':'')+'</span>'}});
+  el.innerHTML=h;
+}
+function listText(m){return M.filter(function(x){return val(m,x.k)>0}).map(function(x){return x.n+" "+val(m,x.k)+" %"}).join(", ")}
+function drawLP(){
+  var h="";
+  V.forEach(function(v,i){h+='<div><strong>Variante '+(i+1)+'</strong><div class="stack" id="lps'+i+'" role="img" aria-label="'+listText(v)+'"></div><small>'+listText(v)+'</small></div>'});
+  $("lp").innerHTML=h;V.forEach(function(v,i){stack(v,$("lps"+i))});
+}
+function drawOrigins(){
+  var h="";
+  M.forEach(function(x){
+    h+='<label for="or_'+x.k+'">'+x.n+'</label><select id="or_'+x.k+'" data-o="'+x.k+'">';
+    ORIG.forEach(function(o,i){h+='<option value="'+i+'"'+((+S.o[x.k]||0)===i?' selected':'')+'>'+o+'</option>'});
+    h+='</select>';
+  });
+  $("origins").innerHTML=h;
+  $("origins").addEventListener("change",function(e){
+    var k=e.target.getAttribute("data-o");if(!k)return;
+    S.o[k]=+e.target.value;checkOrigins();
+  });
+  checkOrigins(true);
+}
+function checkOrigins(silent){
+  var n=M.filter(function(x){return +S.o[x.k]>0}).length;
+  S.s[1]=(n===M.length)?1:0;
+  $("orgNote").textContent=S.s[1]?"Etapa completa. Fíjate: ¿qué variante depende más de materiales comprados?":"Clasificados: "+n+" de "+M.length+".";
+  drawTabs();if(!silent)persist();
+}
+
+/* ---------- Etapa 3 ---------- */
+function drawSliders(){
+  var h="";
+  M.forEach(function(x){h+='<label for="m_'+x.k+'">'+x.n+': <output id="mo_'+x.k+'">'+val(S.m,x.k)+'</output> %</label><input type="range" id="m_'+x.k+'" data-m="'+x.k+'" min="0" max="100" step="5" value="'+val(S.m,x.k)+'">'});
+  $("sliders").innerHTML=h;
+}
+$("sliders").addEventListener("input",function(e){
+  var k=e.target.getAttribute("data-m");if(!k)return;
+  S.m[k]=+e.target.value;S.s[2]=0;$("saveMsg").textContent="";drawMix();
+});
+function drawMix(){
+  M.forEach(function(x){var o=$("mo_"+x.k),i=$("m_"+x.k);if(o)o.textContent=val(S.m,x.k);if(i)i.value=val(S.m,x.k)});
+  var t=total(S.m);
+  $("tot").textContent="Total: "+t+" %";
+  $("totMsg").textContent=t===100?"":(t<100?"Faltan "+(100-t)+" %":"Te pasas "+(t-100)+" %");
+  stack(S.m,$("myStack"));$("myStack").setAttribute("aria-label","Tu mezcla: "+listText(S.m));
+  // Mirada ambiental
+  var c=[0,0,0,0];M.forEach(function(x){c[+S.o[x.k]||0]+=val(S.m,x.k)});
+  var bars="",lab=["Sin clasificar (vuelve a la Etapa 2)","Del terreno o del entorno","Residuo de otra actividad","Se compra"];
+  for(var i=1;i<4;i++){bars+='<p style="margin:6px 0 2px">'+lab[i]+': <strong>'+c[i]+' %</strong></p><div class="bar"><span style="width:'+Math.min(100,c[i])+'%"></span></div>'}
+  if(c[0]>0)bars+='<p class="note">Sin clasificar: '+c[0]+' %. Clasifica esos materiales en la Etapa 2.</p>';
+  $("orgBars").innerHTML=bars;
+  // Pistas
+  var m=S.m,hs=[];
+  if(val(m,"arena")>0&&val(m,"arcilla")>0)hs.push("Tu mezcla tiene partículas gruesas (arena) y finas (arcilla). ¿Qué papel crees que cumple cada una? Compruébalo al preparar la mezcla.");
+  if(val(m,"arena")===0&&val(m,"arcilla")===0)hs.push("No agregaste arena ni arcilla: el resultado dependerá de lo que ya tiene tu tierra. ¿Qué te dijo tu prueba de sedimentación?");
+  if(val(m,"cemento")>0)hs.push("Usas cemento, un insumo industrial cuya fabricación requiere mucha energía. ¿Podrías lograr tu objetivo con menos cemento o sin él? Se puede probar en la práctica.");
+  else hs.push("No usas cemento. ¿Qué otro componente de tu mezcla podría ayudar a unir el material? Es una hipótesis para observar.");
+  if(val(m,"cascarilla")+val(m,"estiercol")>0)hs.push("Incluyes residuos orgánicos (cascarilla o estiércol). Aprovechan lo que sobra, pero pueden cambiar cómo se seca y se comporta la mezcla. ¿Qué observarías?");
+  if(val(m,"ceniza")>0)hs.push("Incluyes ceniza, un residuo. ¿De dónde la obtendrías y en qué cantidad la tendrías disponible?");
+  if(val(m,"tierra")<30)hs.push("Usas poca tierra del sitio. ¿Qué pasa con la idea de aprovechar materiales del entorno?");
+  $("hints").innerHTML=hs.map(function(s){return "<li>"+s+"</li>"}).join("");
+}
+document.querySelectorAll("[data-load]").forEach(function(b){b.addEventListener("click",function(){
+  var i=+b.getAttribute("data-load");S.m=i<0?{tierra:100}:JSON.parse(JSON.stringify(V[i]));S.s[2]=0;$("saveMsg").textContent="";drawMix();drawTabs();
+})});
+$("saveMix").addEventListener("click",function(){
+  var t=total(S.m),n=M.filter(function(x){return val(S.m,x.k)>0}).length;
+  if(t!==100){$("saveMsg").textContent="Ajusta los porcentajes hasta sumar 100 %.";$("saveMsg").className="warn";return}
+  if(n<2){$("saveMsg").textContent="Usa al menos dos materiales.";$("saveMsg").className="warn";return}
+  S.s[2]=1;$("saveMsg").textContent="Variante guardada.";$("saveMsg").className="ok";drawTabs();persist();
+});
+
+/* ---------- Etapa 4 ---------- */
+function drawSummary(){$("mixSummary").textContent="Tu variante: "+listText(S.m)+"."}
+["r0","r1","r2"].forEach(function(id,i){$(id).value=S.r[i]||"";$(id).addEventListener("input",function(){S.r[i]=$(id).value;S.s[3]=0;$("refMsg").textContent=""})});
+$("saveRef").addEventListener("click",function(){
+  var ok=S.r.every(function(t){return t.trim().length>=20});
+  if(!ok){$("refMsg").textContent="Escribe al menos 20 caracteres en cada respuesta.";$("refMsg").className="warn";return}
+  S.s[3]=1;$("refMsg").textContent="Reflexión guardada.";$("refMsg").className="ok";drawTabs();persist();
+});
+
+/* ---------- Inicio ---------- */
+scormInit();restore();
+["r0","r1","r2"].forEach(function(id,i){$(id).value=S.r[i]||""});
+drawLP();drawOrigins();drawSliders();drawMix();jar();drawTabs();
+if(S.cur===3)drawSummary();
+window.addEventListener("beforeunload",function(){persist();scormEnd()});
+window.addEventListener("unload",function(){scormEnd()});
+</script>
+</body>
+</html>
